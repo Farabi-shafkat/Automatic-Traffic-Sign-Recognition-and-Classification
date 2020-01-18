@@ -1,5 +1,5 @@
 # traffic-sign-recognition-tutorial-code
-This is the code i wrote while following a tutorial made by pyimagsearch that uses keras to train a deep convolutional neural network to recognise traffic signs
+This is  code i wrote while following a tutorial made by pyimagsearch that uses keras to train a deep convolutional neural network to recognise traffic signs
 The full tutorial can be found here : https://www.pyimagesearch.com/2019/11/04/traffic-sign-classification-with-keras-and-deep-learning/
 
 Traffic sign classification is the process of automatically recognizing traffic signs along the road, including speed limit signs, yield signs, merge signs, etc. Being able to automatically recognize traffic signs enables us to build “smarter cars”.
