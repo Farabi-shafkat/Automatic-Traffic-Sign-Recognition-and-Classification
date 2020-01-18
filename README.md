@@ -40,4 +40,5 @@ Open a command promt and run the command below:
  
 ## Predictions:
 Open up a terminal and execute the following command:
-  ython predict.py --model output/trafficsignnet.model --images gtsrb-german-traffic-sign/Test --examples examples
+  python predict.py --model output/trafficsignnet.model --images gtsrb-german-traffic-sign/Test --examples examples
+If you want to test the model on custom images, set the --images argument to the path of the images. After testing, the scipt will save randomly chosen examples in the --examples path
