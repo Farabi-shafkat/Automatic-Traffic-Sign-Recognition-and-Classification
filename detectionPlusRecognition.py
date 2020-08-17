@@ -30,7 +30,7 @@ for (x,y,w,h) in boxes:
     print(x,y,w,h)
     img = cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
     #model.predict
-    cropped_image = full_image[x:x+w, y:y+h, : ]
+    cropped_image = full_image[ y:y+h,x:x+w, : ]
     cropped_image = transform.resize(cropped_image,(32,32))
     cropped_image = exposure.equalize_adapthist(cropped_image, clip_limit=0.1)
     cropped_image = cropped_image.astype("float")/255.0
