@@ -15,6 +15,8 @@ import argparse
 import random
 import os
 
+
+
 def load_split(basePath,csvPath):
     data=[]
     labels=[]
@@ -35,16 +37,27 @@ def load_split(basePath,csvPath):
     return (data,labels)
 
 
+
+
 ap = argparse.ArgumentParser()
 ap.add_argument("-d","--dataset",required=True,help="path to input dataset")
 ap.add_argument("-m","--model",required=True,help="path to output model")
-ap.add_argument("-p","--plot",required=True,help="path to output model")
+ap.add_argument("-p","--plot",required=True,help="path to output plot")
+ap.add_argument("-e","--epoch",required=True,help="number of training epochs")
 args = vars(ap.parse_args())
 
 
-NUM_EPOCHS = 40
+
+
+NUM_EPOCHS = ap['epoch']
 INIT_LR = 1e-3
 Batch_siz = 64
+signatue = "trial_run_0"
+
+filepath = os.path.join(ap["model"],"saved-model-{epoch:02d}-{val_acc:.2f}.hdf5")
+
+checkpoint = keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+
 
 labelnames = open("signnames.csv").read().strip().split("\n")[1:]
 labelnames = [ l.split(",")[1] for l in labelnames]
@@ -91,7 +104,8 @@ H = model.fit_generator(
         steps_per_epoch=trainX.shape[0]//Batch_siz,
         epochs=NUM_EPOCHS,
         class_weight=classWeight,
-        verbose=1
+        verbose=1,
+        callbacks= [checkpoint]
         )
 
 
@@ -103,9 +117,10 @@ print(classification_report(
         target_names=labelnames,
         ))
 
+np.save('run{}history_final.npy'.format(signature),H.history)
 
 print("[INFO] saving network to '{}'...".format(args["model"]))
-model.save(args["model"])
+model.save(ap["model"])
 plt.style.use("ggplot")
 plt.figure()
 N = np.arange(0, NUM_EPOCHS)
