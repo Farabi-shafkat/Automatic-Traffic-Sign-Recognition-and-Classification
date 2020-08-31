@@ -51,7 +51,7 @@ class TrafficSignNet:
         model.add(BatchNormalization())
         model.add(Dropout(0.5))
 
-        #model.add(Flatten()) #is this even necessary?
+        model.add(Flatten()) #is this even necessary?
         model.add(Dense(128))
         model.add(Activation("relu"))
         model.add(BatchNormalization())

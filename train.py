@@ -5,6 +5,8 @@ from TrafficSignNet import TrafficSignNet
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras import callbacks
+
 from sklearn.metrics import classification_report
 from skimage import transform
 from skimage import exposure
@@ -49,14 +51,14 @@ args = vars(ap.parse_args())
 
 
 
-NUM_EPOCHS = ap['epoch']
+NUM_EPOCHS = args['epoch']
 INIT_LR = 1e-3
 Batch_siz = 64
-signatue = "trial_run_0"
+signature = "trial_run_1"
 
-filepath = os.path.join(ap["model"],"saved-model-{epoch:02d}-{val_acc:.2f}.hdf5")
+filepath = os.path.join(args["model"],"saved-model-{epoch:02d}-{val_acc:.2f}.h5")
 
-checkpoint = keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+checkpoint = callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 
 
 labelnames = open("signnames.csv").read().strip().split("\n")[1:]
@@ -82,6 +84,8 @@ testY = to_categorical(testY, numLabels)
 classTotal = trainY.sum(axis=0)
 print("classtotal ",classTotal)
 classWeight = classTotal.max()/classTotal
+classWeight = {i : classWeight[i] for i in range(len(classWeight))}
+
 
 aug = ImageDataGenerator(
     rotation_range=10,
@@ -98,7 +102,7 @@ opt = Adam(lr=INIT_LR,decay=INIT_LR/(NUM_EPOCHS*0.5))
 model = TrafficSignNet.build(width=32,height=32,depth=3,classes=numLabels)
 model.compile(loss="categorical_crossentropy",optimizer=opt,metrics=["accuracy"])
 print("[INFO] training the model.....")
-H = model.fit_generator(
+H = model.fit(
         aug.flow(trainX,trainY,batch_size=Batch_siz),
         validation_data=(testX,testY),
         steps_per_epoch=trainX.shape[0]//Batch_siz,
@@ -117,10 +121,10 @@ print(classification_report(
         target_names=labelnames,
         ))
 
-np.save('run{}history_final.npy'.format(signature),H.history)
+np.save(os.path.join(args["plot"],'run{}history_final.npy'.format(signature)),H.history)
 
 print("[INFO] saving network to '{}'...".format(args["model"]))
-model.save(ap["model"])
+model.save(args["model"])
 plt.style.use("ggplot")
 plt.figure()
 N = np.arange(0, NUM_EPOCHS)
