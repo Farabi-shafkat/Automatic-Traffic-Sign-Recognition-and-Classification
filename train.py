@@ -26,6 +26,7 @@ def load_split(basePath,csvPath):
     random.shuffle(rows)
     for (i,row) in enumerate(rows):
         if i>0 and i % 1000 == 0:
+            #break
             print("preprocessed total %d images"%(i));
         (label,imagePath) = row.strip().split(",")[-2:]
         imagePath=os.path.sep.join([basePath,imagePath])
@@ -51,17 +52,17 @@ args = vars(ap.parse_args())
 
 
 
-NUM_EPOCHS = args['epoch']
+NUM_EPOCHS = int(args['epoch'])
 INIT_LR = 1e-3
 Batch_siz = 64
 signature = "trial_run_1"
 
-filepath = os.path.join(args["model"],"saved-model-{epoch:02d}-{val_acc:.2f}.h5")
+filepath = os.path.join(args["model"],"saved-model-{epoch:02d}.h5")
 
 checkpoint = callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 
 
-labelnames = open("signnames.csv").read().strip().split("\n")[1:]
+labelnames = open("/content/traffic-sign-recognition-tutorial-code/signnames.csv").read().strip().split("\n")[1:]
 labelnames = [ l.split(",")[1] for l in labelnames]
 
 
