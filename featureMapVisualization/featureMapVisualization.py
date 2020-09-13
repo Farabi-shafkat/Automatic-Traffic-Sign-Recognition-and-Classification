@@ -50,7 +50,7 @@ feature_maps = model2.predict(image)
 
 for ind,fmap in enumerate(feature_maps):
     ix = 1
-    figtitle = 'output of layer'+ str(indexes[ind],) + '-' + model1.layers[indexes[ind]].name 
+    figtitle = 'output_of_layer_'+ str(indexes[ind],) + '_' + model1.layers[indexes[ind]].name  
     print(figtitle)
     for _ in range(4):
         for _ in range(num_features[ind]):
